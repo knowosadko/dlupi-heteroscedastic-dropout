@@ -5,14 +5,14 @@ import torch
 
 
 def vanilla_reparametrize( mu, std ):
-    eps = torch.randn(std.size())
+    eps = torch.randn(std.size()).to(std.device)
     return eps.mul(std).add_(mu), std
 
 
-def vae_reparametrize( mu, logvar, distribution= 'normal' ):
+def vae_reparametrize( mu, logvar, distribution= 'normal'):
     std = logvar.mul(0.5).exp_()
     if distribution == 'normal':
-        eps = torch.randn(std.size())
+        eps = torch.randn(std.size()).to(std.device)
     else:
         raise TypeError("undefined distribution for reparam trick. quitting...")
     return eps.mul(std).add_(mu), std

@@ -22,9 +22,12 @@ from build_model import build_model
 from my_cifar import MyCIFAR10
 
 class ConvNet_Graph(object):
+    
     def __init__(self, opt):
         self.opt = opt
         self._seed_config()
+        self.device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
+        print(f'Utilized device: {self.device}')
         if not os.path.isdir(opt.ckpt_path):
             os.makedirs(opt.ckpt_path)
         self.train_loader = self._build_dataloader_cifar(split='train')
@@ -41,7 +44,8 @@ class ConvNet_Graph(object):
         self.num_examples_seen_in_epoch = 0
         self.is_nan = False
         self.num_epochs_no_acc_improv = 0
-
+        print(f'Using: {self.device}')
+        
     def _seed_config(self):
         np.random.seed(1)
         random.seed(1)
@@ -52,6 +56,7 @@ class ConvNet_Graph(object):
     def _model_setup(self):
         """ Virtual Function that can be replaced for a two-model convnet."""
         self.model = build_model(self.opt)
+        self.model = self.model.to(self.device)
         if self.opt.parallelize:
             self.model = torch.nn.DataParallel(self.model)
         if self.opt.model_fpath != '':
@@ -169,16 +174,15 @@ class ConvNet_Graph(object):
 
     def _run_iteration(self, data, train, step, data_loader, tag ):
         """ """
-        # WARNING remove below part
-        if (self.opt.dataset == 'imagenet_bboxes') and (tag in ['Train' ]):
+        if tag in ['Train' ]:
             images_t, labels_t, xstar_t = data
-        elif (self.opt.dataset == 'imagenet_bboxes') and (tag == 'Val'):
+        elif tag == 'Val':
             images_t, labels_t = data
             xstar_t = None
         batch_size = images_t.size(0)
         self.num_examples_seen_in_epoch += batch_size
 
-        labels_v = Variable(labels_t.type(torch.LongTensor), volatile=not train)
+        labels_v = torch.tensor(labels_t,  dtype=torch.long).to(self.device)
         loss_v, x_output_v = self._forward_pass(images_t, xstar_t, labels_v, batch_size, train)
 
         preds_t = x_output_v.data.max(1)[1]
@@ -207,11 +211,11 @@ class ConvNet_Graph(object):
 
         We return:
         -   loss_v: scalar loss value in the form of a PyTorch Variable
-        -   x_output_v: logits in the form of a PyTorch Variable
+        -   x_output_v: logits in the form of Try running random gaussian dropout as wella PyTorch Variable
         """
-        images_v = Variable( images_t.type(torch.FloatTensor), volatile=not train)
+        images_v = torch.tensor(images_t, requires_grad=train, dtype=torch.float).to(self.device)
         if train:
-            xstar_v = Variable(xstar_t.type(torch.FloatTensor), volatile=not train)
+            xstar_v = torch.tensor(xstar_t, requires_grad=train, dtype=torch.float).to(self.device)
         else:
             xstar_v = None
 

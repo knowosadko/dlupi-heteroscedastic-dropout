@@ -18,21 +18,21 @@ class VGG_RandomGaussianDropout(nn.Module):
 
     def __init__(self, features):
         super(VGG_RandomGaussianDropout, self).__init__()
-        num_classes = 1000
+        num_classes =  10 # CHANGE FLAG
         self.features = features
 
         self.relu = nn.ReLU(inplace=True)
 
-        self.fc1 = nn.Linear(512 * 7 * 7, 4096)
-        self.fc2 = nn.Linear(4096, 4096)
-        self.fc3 = nn.Linear(4096, num_classes)
+        self.fc1 = nn.Linear(512, 128)
+        self.fc2 = nn.Linear(128, 128)
+        self.fc3 = nn.Linear(128, num_classes)
 
         self._initialize_weights()
 
     def rand_gauss_dropout(self, x):
         std = 1.0
         mu = 1.0
-        eps = torch.randn(x.size()) # WARNING check if working corretcly
+        eps = torch.randn(x.size()).to(x.device) # WARNING check if working corretcly
         # eps = torch.FloatTensor(x.size()).normal_() 
         eps.requires_grad_() # we will need the Gradient
         noise = eps.mul(std).add_(mu)

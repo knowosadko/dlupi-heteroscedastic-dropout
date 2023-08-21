@@ -1,7 +1,4 @@
 # John Lambert,  Ozan Sener
-
-
-
 import argparse
 import os.path
 import torch
@@ -49,13 +46,13 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default= 32 )
     parser.add_argument('--optimizer_type', type=str, default='sgd') # otherwise, 'sgd'
     parser.add_argument('--learning_rate', type=float, default=1e-2 ) # 0.01 for sgd
-    parser.add_argument('--model_type', type=str, default= ModelType.DROPOUT_FN_OF_XSTAR )
+    parser.add_argument('--model_type', type=str, default= ModelType.DROPOUT_RANDOM_GAUSSIAN_NOISE)
 
         # DROPOUT_FN_OF_XSTAR
         # DROPOUT_RANDOM_GAUSSIAN_NOISE
 
 
-    parser.add_argument('--parallelize', type=bool, default=True)
+    parser.add_argument('--parallelize', type=bool, default=False) # Maybe should be removed
     parser = get_fixed_hyperparams(parser)
     opt = parser.parse_args()
 
