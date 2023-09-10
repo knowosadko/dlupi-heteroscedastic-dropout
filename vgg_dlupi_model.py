@@ -98,7 +98,7 @@ class DualNetworksVGG(nn.Module):
         self.running_std_1.fill_(1)
         self.running_std_2.fill_(1)
 
-    def compute_dropout(self, x, x_star, train, sigma_name ):
+    def   compute_dropout(self, x, x_star, train, sigma_name ): # this should be changed to nn.Linear class
         """
         Sample from normal distribution of side channel's running variance (set mean = 0 always).
         We do this as opposed to using standard inverted Bernoulli dropout,
@@ -108,7 +108,9 @@ class DualNetworksVGG(nn.Module):
         on the incoming data. During training we also keep an exponentially decaying
         running mean of the mean and variance of each feature, and these averages are used
         for the reparameterization data at test-time.
+First of all I am very sorry for  not updating for a long  time.  However, I was constantly working on the project except one week when I was sick. Thus hours wise I am one week behind the schedule. But I would be able to work double (30 hours a week instead of 15 hours) one of the next two weeks to catch up with the schedule. 
 
+Last few weeks I was tangled up with technical stuff, not much research. 1. At the beggining  
         At each timestep we update the running averages for variance using
         an exponential decay based on the momentum parameter:
 

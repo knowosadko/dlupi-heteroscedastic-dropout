@@ -37,7 +37,7 @@ class VGG_InformationDropout(nn.Module):
 
         # If learning these params fails, can also try:
         # mu1 = 0.8 * torch.ones(alphas[0].size()).type(torch.cuda.FloatTensor)
-        # sigm1 = 0.8
+        # sigm1 = 0.8build_mo
 
         # mu1 = 0.5
         # sigma1 = 0.4
@@ -122,7 +122,7 @@ class VGG_InformationDropout(nn.Module):
             # info dropout for softplus
             kl = self._KL_div2(torch.log(torch.max(x_out,1e-4)), alpha)
 
-        zero_mean = Variable( torch.zeros(x_out.size()).type(torch.cuda.FloatTensor) )
+        zero_mean = torch.zeros(x_out.size(),dtype=torch.float)
         noise = sample_lognormal(mean=zero_mean, sigma=alpha, sigma0=sigma0)
         # Noisy output of Information Dropout
         return x_out * noise, kl
