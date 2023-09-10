@@ -14,7 +14,7 @@ __all__ = [
 
 
 
-class VGG_RandomGaussianDropout(nn.Module):
+class VGG_RandomGaussianDropout(nn.Module):# pytorch module
 
     def __init__(self, features):
         super(VGG_RandomGaussianDropout, self).__init__()
@@ -74,7 +74,7 @@ class VGG_RandomGaussianDropout(nn.Module):
 
 def make_layers(cfg, batch_norm=False):
     layers = []
-    in_channels = 3
+    in_channels = 1
     for v in cfg:
         if v == 'M':
             layers += [nn.MaxPool2d(kernel_size=2, stride=2)]

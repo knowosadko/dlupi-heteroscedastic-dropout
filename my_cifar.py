@@ -3,6 +3,10 @@ import torchvision
 import torchvision.transforms as transforms
 from torchvision import datasets
 from torch.utils.data import Dataset
+
+CLASSES = ['plane', 'car', 'bird', 'cat',
+           'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+
 class MyCIFAR10(Dataset):
     
     def __init__(self, train=True):
@@ -17,9 +21,10 @@ class MyCIFAR10(Dataset):
     def __getitem__(self, idx):
         x_star = self.dst[idx][0]
         label =  self.dst[idx][1]
-        x = x_star
-        x[1,:,:] = 0 
-        x[2,:,:] = 0 
+        x = x_star[0,:,:].clone()
+        x = x.unsqueeze(0)
+        x_star = torch.stack((x_star[1,:,:], x_star[2,:,:]))
+        #return x, label
         if self.train:
             return x, label, x_star
         else:
